@@ -1,0 +1,16 @@
+# virtual environments
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# logs
+*.log
+
+# Claude Code project notes
+CLAUDE.md

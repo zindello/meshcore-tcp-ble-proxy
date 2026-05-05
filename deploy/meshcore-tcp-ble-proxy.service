@@ -1,0 +1,19 @@
+[Unit]
+Description=MeshCore TCP-BLE Proxy
+After=network.target bluetooth.target
+Wants=bluetooth.target
+
+[Service]
+Type=simple
+User=meshcore-proxy
+Group=meshcore-proxy
+ExecStart=/opt/meshcore-tcp-ble-proxy/venv/bin/meshcore-proxy
+WorkingDirectory=/opt/meshcore-tcp-ble-proxy
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=meshcore-proxy
+
+[Install]
+WantedBy=multi-user.target

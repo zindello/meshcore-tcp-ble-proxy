@@ -1,0 +1,2 @@
+bless>=0.2.0
+pyobjc-framework-CoreBluetooth>=10.0
