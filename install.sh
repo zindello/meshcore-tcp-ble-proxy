@@ -19,7 +19,7 @@ die()   { echo "  [✗] $*" >&2; exit 1; }
 
 prompt() {
     local var="$1" prompt_text="$2" default="$3"
-    read -r -p "      ${prompt_text} [${default}]: " "${var?}"
+    read -r -p "      ${prompt_text} [${default}]: " "${var?}" || true
     : "${!var:=$default}"
 }
 
