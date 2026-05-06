@@ -20,7 +20,11 @@ die()   { echo "  [✗] $*" >&2; exit 1; }
 
 prompt() {
     local var="$1" prompt_text="$2" default="$3"
-    read -r -p "      ${prompt_text} [${default}]: " "${var?}" || true
+    # Read from /dev/tty directly so piped installs (curl|bash, ssh|bash)
+    # don't accidentally consume the rest of the script from stdin.
+    if [[ -e /dev/tty ]]; then
+        read -r -p "      ${prompt_text} [${default}]: " "${var?}" </dev/tty || true
+    fi
     : "${!var:=$default}"
 }
 
