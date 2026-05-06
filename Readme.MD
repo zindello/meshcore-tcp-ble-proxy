@@ -158,6 +158,21 @@ Each characteristic write or notification carries exactly one protocol frame. Ap
 
 ---
 
+## Using with pyMC Repeater
+
+> **Temporary requirement:** the MeshMapper companion protocol fixes needed by this proxy are not yet merged into pyMC_Core's main branch. If you are running pyMC Repeater as your TCP companion, you must upgrade Core to the staging branch:
+
+```bash
+cd /opt/pymc_repeater
+source venv/bin/activate
+pip install --force-reinstall "git+https://github.com/zindello/pyMC_Core.git@feat/companion-meshmapper-fixes"
+systemctl restart pymc-repeater
+```
+
+Once the PR is merged this step will no longer be necessary.
+
+---
+
 ## Troubleshooting
 
 ### Linux / Raspberry Pi
