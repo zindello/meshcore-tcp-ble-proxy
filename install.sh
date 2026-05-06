@@ -4,6 +4,7 @@
 set -euo pipefail
 
 REPO_URL="https://github.com/zindello/meshcore-tcp-ble-proxy"
+REPO_BRANCH="${MESHCORE_PROXY_BRANCH:-main}"
 INSTALL_DIR="/opt/meshcore-tcp-ble-proxy"
 CONFIG_DIR="/etc/meshcore-tcp-ble-proxy"
 SERVICE_USER="meshcore-proxy"
@@ -50,8 +51,8 @@ if [[ -d "${INSTALL_DIR}/.git" ]]; then
     info "Updating existing installation at ${INSTALL_DIR}…"
     git -C "${INSTALL_DIR}" pull --quiet
 else
-    info "Cloning repository into ${INSTALL_DIR}…"
-    git clone --quiet "${REPO_URL}" "${INSTALL_DIR}"
+    info "Cloning repository (branch: ${REPO_BRANCH}) into ${INSTALL_DIR}…"
+    git clone --quiet --branch "${REPO_BRANCH}" "${REPO_URL}" "${INSTALL_DIR}"
 fi
 
 # ── D-Bus policy ──────────────────────────────────────────────────────────────
