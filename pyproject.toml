@@ -15,7 +15,9 @@ dependencies = [
 
 [project.optional-dependencies]
 # pip install ".[linux]"   — Raspberry Pi / any BlueZ host
-linux  = ["dbus-next>=0.2.3"]
+# bleak<0.20.0 pins to the dbus-next backend; bleak 0.20+ switched to dbus-fast
+# which has no binary wheels for 32-bit ARM (Pi Zero W) and must compile Cython.
+linux  = ["dbus-next>=0.2.3", "bleak<0.20.0"]
 # pip install ".[macos]"   — macOS (M1/M2/M3 or Intel)
 macos  = ["pyobjc-framework-CoreBluetooth>=10.0"]
 
