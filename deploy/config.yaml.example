@@ -1,0 +1,7 @@
+tcp:
+  host: localhost
+  port: 5050
+  handshake_timeout: 10.0
+
+logging:
+  debug: false

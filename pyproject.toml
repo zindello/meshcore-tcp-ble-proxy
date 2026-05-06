@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "meshcore-tcp-ble-proxy"
+version = "0.1.0"
+description = "MeshCore TCP-BLE proxy for Raspberry Pi"
+readme = "Readme.MD"
+requires-python = ">=3.11"
+dependencies = [
+    "bless>=0.2.0",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+# pip install ".[linux]"   — Raspberry Pi / any BlueZ host
+# bleak<0.20.0 pins to the dbus-next backend; bleak 0.20+ switched to dbus-fast
+# which has no binary wheels for 32-bit ARM (Pi Zero W) and must compile Cython.
+linux  = ["dbus-next>=0.2.3", "bleak<0.20.0"]
+# pip install ".[macos]"   — macOS (M1/M2/M3 or Intel)
+macos  = ["pyobjc-framework-CoreBluetooth>=10.0"]
+
+[project.scripts]
+meshcore-tcp-ble-proxy = "proxy.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["proxy"]

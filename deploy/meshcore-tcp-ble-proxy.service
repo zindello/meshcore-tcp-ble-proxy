@@ -1,0 +1,27 @@
+[Unit]
+Description=MeshCore TCP-BLE Proxy
+After=network.target bluetooth.service hciuart.service
+Requires=bluetooth.service
+Wants=hciuart.service
+
+[Service]
+Type=simple
+User=meshcore-tcp-ble-proxy
+Group=meshcore-tcp-ble-proxy
+# Unblock the radio, then wait up to 30 s for the controller firmware to
+# appear before powering on.  The Pi Zero 2W BT UART init can lag behind
+# bluetooth.service becoming active, so a bare "bluetoothctl power on"
+# fails with "No default controller available" without this wait.
+# The + prefix runs these as root regardless of User=.
+ExecStartPre=+/usr/sbin/rfkill unblock bluetooth
+ExecStartPre=+/bin/sh -c 'for i in $(seq 15); do bluetoothctl show | grep -q "Controller" && break; sleep 2; done; bluetoothctl power on'
+ExecStart=/opt/meshcore-tcp-ble-proxy/venv/bin/meshcore-tcp-ble-proxy
+WorkingDirectory=/opt/meshcore-tcp-ble-proxy
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=meshcore-tcp-ble-proxy
+
+[Install]
+WantedBy=multi-user.target
