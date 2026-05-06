@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # MeshCore TCP-BLE Proxy installer
-# Usage: curl -sSL https://raw.githubusercontent.com/zindello/meshcore-tcp-ble-proxy/main/install.sh | sudo bash
+# Usage: curl -sSL https://raw.githubusercontent.com/zindello/meshcore-tcp-ble-proxy/dev/install.sh | sudo bash
 set -euo pipefail
 
 REPO_URL="https://github.com/zindello/meshcore-tcp-ble-proxy"
-REPO_BRANCH="${MESHCORE_PROXY_BRANCH:-main}"
+REPO_BRANCH="${MESHCORE_PROXY_BRANCH:-dev}"
 INSTALL_DIR="/opt/meshcore-tcp-ble-proxy"
 CONFIG_DIR="/etc/meshcore-tcp-ble-proxy"
 SERVICE_USER="meshcore-tcp-ble-proxy"
