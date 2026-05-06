@@ -213,6 +213,9 @@ class BLEPeripheral:
         if self._loop is None:
             return
         frame = bytes(value)
+        if not frame:
+            log.debug("ble: ignoring empty write on %s", characteristic.uuid)
+            return
         log.debug(
             "ble: write  %s  (%d B)\n%s",
             P.cmd_name(frame[0]) if frame else "?",

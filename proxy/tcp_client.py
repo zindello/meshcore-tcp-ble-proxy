@@ -21,6 +21,7 @@ _RX_MARKER = 0x3E   # '>'  device sends to us
 _MAX_FRAME = 300
 _MAX_BUF   = _MAX_FRAME * 8   # drop and reset if a buggy/malicious peer fills the buffer
 _RECONNECT_DELAY = 5.0
+_READ_TIMEOUT    = 120.0  # seconds; catches half-open connections where peer accepted but went silent
 
 
 class TCPClient:
@@ -91,7 +92,11 @@ class TCPClient:
     async def _read_loop(self, reader: asyncio.StreamReader) -> None:
         buf = b""
         while True:
-            chunk = await reader.read(512)
+            try:
+                chunk = await asyncio.wait_for(reader.read(512), timeout=_READ_TIMEOUT)
+            except asyncio.TimeoutError:
+                log.warning("tcp: read timeout after %.0fs — reconnecting", _READ_TIMEOUT)
+                return
             if not chunk:
                 return
             log.debug(
