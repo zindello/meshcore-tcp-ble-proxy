@@ -116,7 +116,13 @@ The proxy is a long-running network service that also has access to the system B
 
 The service runs as `meshcore-tcp-ble-proxy`, which does not have permission to manipulate the Bluetooth radio state. On Raspberry Pi OS, the Bluetooth adapter often starts in a soft-blocked state (rfkill) or powered off. Without explicitly unblocking and powering the adapter before starting, the proxy fails immediately with `Failed to register advertisement`.
 
-The `+` prefix in `ExecStartPre=+/usr/sbin/rfkill unblock bluetooth` instructs systemd to run that specific command as root, regardless of the `User=` directive. The main `ExecStart` command still runs as the unprivileged service account.
+The `+` prefix instructs systemd to run that specific command as root, regardless of the `User=` directive. The main `ExecStart` command still runs as the unprivileged service account.
+
+### Why bluetoothctl power on uses a wait loop
+
+On the Pi Zero 2W, the BT controller firmware is loaded over UART by `hciuart` or a similar kernel mechanism. Even after `bluetooth.service` becomes active, the controller may not yet be registered with bluetoothd. A bare `bluetoothctl power on` in this window fails with `No default controller available` and exits with code 1, aborting the service start.
+
+The wait loop polls `bluetoothctl show` for the string `Controller` up to 15 times (30 seconds), then runs `power on` once the controller appears. The Pi Zero (original) does not exhibit this race, but the Zero 2W does — the wait loop is harmless on both.
 
 ### Why `--system-site-packages` is used for the virtual environment
 
