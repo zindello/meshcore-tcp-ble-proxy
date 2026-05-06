@@ -34,7 +34,7 @@ prompt() {
 info "Installing system packages…"
 apt-get update -qq
 apt-get install -y --no-install-recommends \
-    git python3 python3-venv bluetooth bluez >/dev/null
+    git python3 python3-venv python3-yaml bluetooth bluez >/dev/null
 
 # ── service user ──────────────────────────────────────────────────────────────
 
@@ -63,8 +63,9 @@ cp "${INSTALL_DIR}/deploy/meshcore-proxy-dbus.conf" "${DBUS_POLICY}"
 # ── virtual environment ───────────────────────────────────────────────────────
 
 info "Creating Python virtual environment…"
-python3 -m venv "${INSTALL_DIR}/venv"
-"${INSTALL_DIR}/venv/bin/pip" install --quiet --upgrade pip
+# --system-site-packages lets the venv use apt-installed python3-yaml,
+# avoiding a from-source compile of PyYAML's C extension on ARM hardware.
+python3 -m venv --system-site-packages "${INSTALL_DIR}/venv"
 "${INSTALL_DIR}/venv/bin/pip" install --quiet "${INSTALL_DIR}[linux]"
 chown -R "${SERVICE_USER}:${SERVICE_USER}" "${INSTALL_DIR}/venv"
 
