@@ -19,11 +19,18 @@ Bridges a remote **MeshCore TCP companion** to a local **Bluetooth Low Energy pe
 ### Raspberry Pi / Linux (recommended)
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/zindello/meshcore-tcp-ble-proxy/main/install.sh | sudo bash
+# Fresh install
+curl -sSL https://raw.githubusercontent.com/zindello/meshcore-tcp-ble-proxy/dev/install.sh | sudo bash -s -- install
+
+# Upgrade an existing installation
+curl -sSL https://raw.githubusercontent.com/zindello/meshcore-tcp-ble-proxy/dev/install.sh | sudo bash -s -- upgrade
+
+# Uninstall
+sudo bash /opt/meshcore-tcp-ble-proxy/install.sh uninstall
 ```
 
 The installer will:
-- Install system dependencies (Python 3, BlueZ, git)
+- Install system dependencies (Python 3, BlueZ, pi-bluetooth, git)
 - Create a dedicated `meshcore-tcp-ble-proxy` service account
 - Clone the repo into `/opt/meshcore-tcp-ble-proxy/`
 - Create a virtual environment and install dependencies
