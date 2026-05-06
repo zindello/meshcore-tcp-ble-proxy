@@ -53,7 +53,9 @@ info "User '${SERVICE_USER}' is a member of the 'bluetooth' group."
 
 if [[ -d "${INSTALL_DIR}/.git" ]]; then
     info "Updating existing installation at ${INSTALL_DIR}…"
-    git -C "${INSTALL_DIR}" pull --quiet
+    git -C "${INSTALL_DIR}" fetch --quiet origin
+    git -C "${INSTALL_DIR}" checkout --quiet "${REPO_BRANCH}"
+    git -C "${INSTALL_DIR}" pull --quiet origin "${REPO_BRANCH}"
 else
     info "Cloning repository (branch: ${REPO_BRANCH}) into ${INSTALL_DIR}…"
     git clone --quiet --branch "${REPO_BRANCH}" "${REPO_URL}" "${INSTALL_DIR}"
