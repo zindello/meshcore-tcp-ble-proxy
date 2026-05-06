@@ -38,7 +38,7 @@ prompt() {
 info "Installing system packages…"
 apt-get update -qq
 apt-get install -y --no-install-recommends \
-    git python3 python3-venv python3-yaml bluetooth bluez >/dev/null
+    git python3 python3-venv python3-yaml bluetooth bluez rfkill >/dev/null
 
 # ── service user ──────────────────────────────────────────────────────────────
 
