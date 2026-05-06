@@ -7,6 +7,10 @@ Wants=bluetooth.target
 Type=simple
 User=meshcore-proxy
 Group=meshcore-proxy
+# Ensure the BT adapter is unblocked and powered on before starting.
+# The + prefix runs these as root regardless of User=.
+ExecStartPre=+/usr/sbin/rfkill unblock bluetooth
+ExecStartPre=+/usr/bin/bluetoothctl power on
 ExecStart=/opt/meshcore-tcp-ble-proxy/venv/bin/meshcore-proxy
 WorkingDirectory=/opt/meshcore-tcp-ble-proxy
 Restart=on-failure
