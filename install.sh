@@ -7,10 +7,10 @@ REPO_URL="https://github.com/zindello/meshcore-tcp-ble-proxy"
 REPO_BRANCH="${MESHCORE_PROXY_BRANCH:-main}"
 INSTALL_DIR="/opt/meshcore-tcp-ble-proxy"
 CONFIG_DIR="/etc/meshcore-tcp-ble-proxy"
-SERVICE_USER="meshcore-proxy"
+SERVICE_USER="meshcore-tcp-ble-proxy"
 SERVICE_NAME="meshcore-tcp-ble-proxy"
 SERVICE_FILE="/etc/systemd/system/${SERVICE_NAME}.service"
-DBUS_POLICY="/etc/dbus-1/system.d/meshcore-proxy.conf"
+DBUS_POLICY="/etc/dbus-1/system.d/meshcore-tcp-ble-proxy.conf"
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -62,7 +62,7 @@ fi
 # ── D-Bus policy ──────────────────────────────────────────────────────────────
 
 info "Installing D-Bus policy…"
-cp "${INSTALL_DIR}/deploy/meshcore-proxy-dbus.conf" "${DBUS_POLICY}"
+cp "${INSTALL_DIR}/deploy/meshcore-tcp-ble-proxy-dbus.conf" "${DBUS_POLICY}"
 
 # ── virtual environment ───────────────────────────────────────────────────────
 

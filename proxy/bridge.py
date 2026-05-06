@@ -25,7 +25,7 @@ log = logging.getLogger(__name__)
 # Fallback BLE name when the companion identity cannot be retrieved.
 # Derived from the machine's MAC address so it's stable per host but unique
 # across machines — preventing phone BLE cache collisions between hosts.
-_node_uuid = uuid.uuid5(uuid.NAMESPACE_DNS, f"meshcore-proxy.{uuid.getnode():012x}")
+_node_uuid = uuid.uuid5(uuid.NAMESPACE_DNS, f"meshcore-tcp-ble-proxy.{uuid.getnode():012x}")
 _FALLBACK_NAME = "MeshCore-" + _node_uuid.hex[:8].upper()
 
 
@@ -57,7 +57,7 @@ class Bridge:
             timeout=self._handshake_timeout,
         )
         if name:
-            device_uuid = uuid.uuid5(uuid.NAMESPACE_DNS, f"meshcore-proxy.{name}")
+            device_uuid = uuid.uuid5(uuid.NAMESPACE_DNS, f"meshcore-tcp-ble-proxy.{name}")
             log.info("bridge: BLE advertisement name: %r  device-id: %s", name, device_uuid)
         else:
             name = _FALLBACK_NAME

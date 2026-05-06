@@ -34,7 +34,7 @@ _MAX_NAME  = 20               # cap node name to keep BLE advert packet well wit
 # Byte 1 must be 0x03 — the companion uses it as a protocol version/capability
 # flag and may send a different (older) frame format if it sees 0x00 here.
 # Reference: meshcore-cli sends b"\x01\x03      mccli"
-_APP_START = bytes([P.CMD_APP_START]) + b"\x03" + b" " * 6 + b"meshcore-proxy"
+_APP_START = bytes([P.CMD_APP_START]) + b"\x03" + b" " * 6 + b"meshcore-tcp-ble-proxy"
 
 
 async def fetch_device_name(

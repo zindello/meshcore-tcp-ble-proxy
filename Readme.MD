@@ -24,7 +24,7 @@ curl -sSL https://raw.githubusercontent.com/zindello/meshcore-tcp-ble-proxy/main
 
 The installer will:
 - Install system dependencies (Python 3, BlueZ, git)
-- Create a dedicated `meshcore-proxy` service account
+- Create a dedicated `meshcore-tcp-ble-proxy` service account
 - Clone the repo into `/opt/meshcore-tcp-ble-proxy/`
 - Create a virtual environment and install dependencies
 - Prompt for the companion host and port (defaults: `localhost`, `5050`)
@@ -88,7 +88,7 @@ sudo systemctl restart meshcore-tcp-ble-proxy
 Any setting can be overridden at the command line without editing the config file:
 
 ```
-meshcore-proxy [--config PATH] [--tcp HOST:PORT] [-v]
+meshcore-tcp-ble-proxy [--config PATH] [--tcp HOST:PORT] [-v]
 
   --config PATH     Config file path (default: /etc/meshcore-tcp-ble-proxy/config.yaml)
   --tcp HOST:PORT   Override companion address from config
@@ -99,13 +99,13 @@ Examples:
 
 ```bash
 # Use config file defaults
-meshcore-proxy
+meshcore-tcp-ble-proxy
 
 # Override companion address
-meshcore-proxy --tcp 192.168.1.50:5050
+meshcore-tcp-ble-proxy --tcp 192.168.1.50:5050
 
 # Debug logging
-meshcore-proxy -v
+meshcore-tcp-ble-proxy -v
 ```
 
 ---

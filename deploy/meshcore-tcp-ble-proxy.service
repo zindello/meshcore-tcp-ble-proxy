@@ -5,19 +5,19 @@ Wants=bluetooth.target
 
 [Service]
 Type=simple
-User=meshcore-proxy
-Group=meshcore-proxy
+User=meshcore-tcp-ble-proxy
+Group=meshcore-tcp-ble-proxy
 # Ensure the BT adapter is unblocked and powered on before starting.
 # The + prefix runs these as root regardless of User=.
 ExecStartPre=+/usr/sbin/rfkill unblock bluetooth
 ExecStartPre=+/usr/bin/bluetoothctl power on
-ExecStart=/opt/meshcore-tcp-ble-proxy/venv/bin/meshcore-proxy
+ExecStart=/opt/meshcore-tcp-ble-proxy/venv/bin/meshcore-tcp-ble-proxy
 WorkingDirectory=/opt/meshcore-tcp-ble-proxy
 Restart=on-failure
 RestartSec=5
 StandardOutput=journal
 StandardError=journal
-SyslogIdentifier=meshcore-proxy
+SyslogIdentifier=meshcore-tcp-ble-proxy
 
 [Install]
 WantedBy=multi-user.target

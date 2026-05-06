@@ -22,7 +22,7 @@ linux  = ["dbus-next>=0.2.3", "bleak<0.20.0"]
 macos  = ["pyobjc-framework-CoreBluetooth>=10.0"]
 
 [project.scripts]
-meshcore-proxy = "proxy.__main__:main"
+meshcore-tcp-ble-proxy = "proxy.__main__:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["proxy"]

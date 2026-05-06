@@ -49,7 +49,7 @@ The `APP_START` frame has a version/capability byte at offset 1. The companion u
 
 ### Why the fallback name is derived from the MAC address
 
-If the TCP handshake fails (companion not yet running, network unreachable), the proxy falls back to `MeshCore-<8 hex chars>`. The 8 characters come from `uuid5(NAMESPACE_DNS, f"meshcore-proxy.{mac_address}")`, where the MAC address is `uuid.getnode()`.
+If the TCP handshake fails (companion not yet running, network unreachable), the proxy falls back to `MeshCore-<8 hex chars>`. The 8 characters come from `uuid5(NAMESPACE_DNS, f"meshcore-tcp-ble-proxy.{mac_address}")`, where the MAC address is `uuid.getnode()`.
 
 This satisfies three constraints simultaneously:
 
@@ -108,13 +108,13 @@ The cap in `tcp_client.py` is `_MAX_FRAME * 8` (a more generous multiple) becaus
 
 ## Deployment and installation
 
-### Why a dedicated service account (`meshcore-proxy`) is used
+### Why a dedicated service account (`meshcore-tcp-ble-proxy`) is used
 
 The proxy is a long-running network service that also has access to the system Bluetooth stack. Running it as root would give any bug in the code or its dependencies root-level access to the host. The dedicated account has exactly the permissions it needs: membership in the `bluetooth` group (for BlueZ D-Bus access) and read access to its config file. It cannot write to the install directory or elsewhere on the filesystem.
 
 ### Why `ExecStartPre=+` is used for rfkill and bluetoothctl
 
-The service runs as `meshcore-proxy`, which does not have permission to manipulate the Bluetooth radio state. On Raspberry Pi OS, the Bluetooth adapter often starts in a soft-blocked state (rfkill) or powered off. Without explicitly unblocking and powering the adapter before starting, the proxy fails immediately with `Failed to register advertisement`.
+The service runs as `meshcore-tcp-ble-proxy`, which does not have permission to manipulate the Bluetooth radio state. On Raspberry Pi OS, the Bluetooth adapter often starts in a soft-blocked state (rfkill) or powered off. Without explicitly unblocking and powering the adapter before starting, the proxy fails immediately with `Failed to register advertisement`.
 
 The `+` prefix in `ExecStartPre=+/usr/sbin/rfkill unblock bluetooth` instructs systemd to run that specific command as root, regardless of the `User=` directive. The main `ExecStart` command still runs as the unprivileged service account.
 
