@@ -118,9 +118,25 @@ The service runs as `meshcore-tcp-ble-proxy`, which does not have permission to 
 
 The `+` prefix instructs systemd to run that specific command as root, regardless of the `User=` directive. The main `ExecStart` command still runs as the unprivileged service account.
 
+### Why `pi-bluetooth` must be installed on Raspberry Pi OS
+
+The `pi-bluetooth` package provides two things that are not present by default:
+
+1. **`BCM43430B0.hcd`** — the firmware patch file for the Pi Zero 2W's BT chip. Without it, the chip runs unpatched (`build 0000`) and the kernel's UART baudrate negotiation commands (`0xfc18`) time out with error -110. `hci0` appears in `/sys/class/bluetooth/` with a valid BD address but cannot be brought up — `hciconfig hci0 up` returns "Connection timed out".
+
+2. **`hciuart.service`** — the systemd service that attaches the UART to BlueZ and triggers firmware loading at the right point in the boot sequence.
+
+The installer (`install.sh`) includes `pi-bluetooth` in the `apt-get install` list and then performs a driver unbind/rebind to load the firmware immediately without rebooting. After unbinding the `hci_uart_bcm` device from the serial driver, the kernel re-probes on rebind and this time finds the `.hcd` file, completing firmware initialisation in place. The device names must be captured before unbinding because the sysfs symlinks disappear the moment unbind completes.
+
+### Why `hciuart.service` is listed in `After=` and `Wants=`
+
+`hciuart.service` (provided by `pi-bluetooth`) loads the BT firmware over UART and registers `hci0` with bluetoothd. The proxy must start after this has completed, otherwise bluetoothd reports "No default controller available".
+
+`Wants=` rather than `Requires=` is intentional: on systems without `pi-bluetooth` (e.g. Pi Zero W where the original hciuart mechanism differs, or macOS), the unit will simply not exist and systemd will proceed without it rather than failing.
+
 ### Why bluetoothctl power on uses a wait loop
 
-On the Pi Zero 2W, the BT controller firmware is loaded over UART by `hciuart` or a similar kernel mechanism. Even after `bluetooth.service` becomes active, the controller may not yet be registered with bluetoothd. A bare `bluetoothctl power on` in this window fails with `No default controller available` and exits with code 1, aborting the service start.
+On the Pi Zero 2W, even after `hciuart.service` completes, bluetoothd may not have registered the controller yet. A bare `bluetoothctl power on` in this window fails with `No default controller available` and exits with code 1, aborting the service start.
 
 The wait loop polls `bluetoothctl show` for the string `Controller` up to 15 times (30 seconds), then runs `power on` once the controller appears. The Pi Zero (original) does not exhibit this race, but the Zero 2W does — the wait loop is harmless on both.
 

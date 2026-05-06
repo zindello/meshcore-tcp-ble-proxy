@@ -1,7 +1,8 @@
 [Unit]
 Description=MeshCore TCP-BLE Proxy
-After=network.target bluetooth.service
+After=network.target bluetooth.service hciuart.service
 Requires=bluetooth.service
+Wants=hciuart.service
 
 [Service]
 Type=simple

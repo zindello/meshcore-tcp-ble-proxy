@@ -38,7 +38,32 @@ prompt() {
 info "Installing system packages…"
 apt-get update -qq
 apt-get install -y --no-install-recommends \
-    git python3 python3-venv python3-yaml bluetooth bluez rfkill >/dev/null
+    git python3 python3-venv python3-yaml bluetooth bluez pi-bluetooth rfkill >/dev/null
+
+# On Pi Zero 2W, the BCM43430B0 BT firmware is loaded over UART by the
+# hci_uart_bcm driver.  If the system booted without pi-bluetooth installed
+# (firmware file absent), the driver attaches but fails to patch the chip.
+# Unbinding and rebinding the driver now that the .hcd file exists reloads
+# the firmware in place — no reboot needed.
+# Gated on Pi Zero 2W only; the original Pi Zero W does not exhibit this race.
+_pi_model=$(tr -d '\0' < /proc/device-tree/model 2>/dev/null || true)
+if echo "$_pi_model" | grep -qi "zero 2" && \
+   compgen -G "/sys/bus/serial/drivers/hci_uart_bcm/serial*-*" > /dev/null 2>&1; then
+    info "Pi Zero 2W detected — reloading Bluetooth firmware without reboot…"
+    # Capture names before unbinding (the symlinks disappear on unbind).
+    _bt_devs=()
+    for dev in /sys/bus/serial/drivers/hci_uart_bcm/serial*-*; do
+        _bt_devs+=("$(basename "$dev")")
+    done
+    for devname in "${_bt_devs[@]}"; do
+        echo "$devname" > /sys/bus/serial/drivers/hci_uart_bcm/unbind 2>/dev/null || true
+    done
+    sleep 1
+    for devname in "${_bt_devs[@]}"; do
+        echo "$devname" > /sys/bus/serial/drivers/hci_uart_bcm/bind 2>/dev/null || true
+    done
+    sleep 3
+fi
 
 # ── service user ──────────────────────────────────────────────────────────────
 
