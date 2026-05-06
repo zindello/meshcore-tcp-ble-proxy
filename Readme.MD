@@ -123,6 +123,8 @@ proxy/
 
 All components run inside a single asyncio event loop.
 
+For the reasoning behind specific design choices — why certain library versions are pinned, how the BLE name is derived, what bugs were encountered and how they were fixed — see [Justifications.md](Justifications.md).
+
 - **TCPClient** maintains a persistent connection with automatic reconnect. Frames from the node arrive via an `on_frame` callback; frames from the app are sent with `send()`.
 - **BLEPeripheral** registers a GATT application with the platform BLE stack (BlueZ on Linux, CoreBluetooth on macOS) and starts advertising. Write callbacks are dispatched with `asyncio.run_coroutine_threadsafe` so they are safe regardless of which OS thread bless uses to deliver them.
 - **Bridge** holds both and cross-wires their callbacks.
